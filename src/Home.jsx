@@ -1,14 +1,15 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import "./midi.css";
+import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
 import Navbar from "react-bootstrap/Navbar";
-import Button from "react-bootstrap/Button";
-import { useEffect } from "react";
+import Spinner from "react-bootstrap/Spinner";
 
 function Home() {
   const [selectedFile, setSelectedFile] = useState(null);
   const [canSubmit, setCanSubmit] = useState(false);
+  const [isFetching, setIsFetching] = useState(false);
   const [midiSrc, setMidiSrc] = useState(null);
 
   const player = useRef(null);
@@ -34,6 +35,7 @@ function Home() {
 
   const handleSubmit = () => {
     setCanSubmit(false);
+    setIsFetching(true);
     const formData = new FormData();
 
     formData.append("file", selectedFile);
@@ -54,6 +56,7 @@ function Home() {
       })
       .finally(() => {
         setCanSubmit(true);
+        setIsFetching(false);
       });
   };
 
@@ -134,6 +137,12 @@ function Home() {
     </div>
   );
 
+  const spinner = (
+    <Spinner animation="border" role="status">
+      <span className="visually-hidden">Loading...</span>
+    </Spinner>
+  );
+
   return (
     <div>
       {navbar} {intro} {form}
@@ -149,7 +158,7 @@ function Home() {
           alt="note_a"
           style={{ marginLeft: "5em", marginRight: "5em" }}
         />
-        {midiSrc && midi}
+        {isFetching ? spinner : midiSrc && midi}
         <img
           src="/note_b.svg"
           width="300em"
