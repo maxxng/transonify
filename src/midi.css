@@ -1,0 +1,18 @@
+midi-player::part(control-panel) {
+  background: #013870;
+}
+
+midi-player::part(play-button) {
+  color: #eaf6de;
+}
+
+midi-visualizer svg rect.note {
+  opacity: 0.5;
+  stroke-width: 1;
+  fill: #013870;
+  stroke: #eaf6de;
+}
+
+midi-visualizer svg rect.note.active {
+  opacity: 1;
+}
