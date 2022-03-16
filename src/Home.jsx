@@ -7,16 +7,55 @@ import Button from "react-bootstrap/Button";
 import { useEffect } from "react";
 
 function Home() {
-  const [file, setFile] = useState(null);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [canSubmit, setCanSubmit] = useState(false);
+  const [midiSrc, setMidiSrc] = useState(null);
+
   const player = useRef(null);
   const pianoRollVisualizer = useRef(null);
   const staffVisualizer = useRef(null);
 
   useEffect(() => {
-    player.current.soundFont = "";
-    player.current.addVisualizer(pianoRollVisualizer.current);
-    player.current.addVisualizer(staffVisualizer.current);
+    if (player.current) {
+      player.current.soundFont = "";
+      player.current.addVisualizer(pianoRollVisualizer.current);
+      player.current.addVisualizer(staffVisualizer.current);
+    }
   });
+
+  const handleChange = (e) => {
+    if (e.target.files[0].type === "audio/wav") {
+      setSelectedFile(e.target.files[0]);
+      setCanSubmit(true);
+    } else {
+      setCanSubmit(false);
+    }
+  };
+
+  const handleSubmit = () => {
+    setCanSubmit(false);
+    const formData = new FormData();
+
+    formData.append("file", selectedFile);
+
+    fetch("http://127.0.0.1:5000/", {
+      method: "POST",
+      mode: "cors",
+      body: formData,
+    })
+      .then((response) => response.blob())
+      .then((result) => {
+        console.log("Success:", result);
+        const urlCreator = window.URL || window.webkitURL;
+        setMidiSrc(urlCreator.createObjectURL(result));
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      })
+      .finally(() => {
+        setCanSubmit(true);
+      });
+  };
 
   const navbar = (
     <Navbar variant="dark" style={{ backgroundColor: "#013870" }}>
@@ -49,13 +88,14 @@ function Home() {
     >
       <input
         type="file"
-        id="myFile"
-        onChange={(e) => setFile(e.target.files[0])}
-        style={{ border: "1px solid bold" }}
+        accept=".wav"
+        onChange={(e) => handleChange(e)}
+        style={{ margin: "1em" }}
       />
-      <br />
       <Button
         size="lg"
+        disabled={!canSubmit}
+        onClick={handleSubmit}
         style={{ margin: "1em", color: "#eaf6de", backgroundColor: "#013870" }}
       >
         Transonify!
@@ -72,11 +112,7 @@ function Home() {
         width: "50%",
       }}
     >
-      <midi-player
-        src="/trans.mid"
-        style={{ alignSelf: "center" }}
-        ref={player}
-      />
+      <midi-player src={midiSrc} style={{ alignSelf: "center" }} ref={player} />
       <br />
       <div
         style={{
@@ -86,7 +122,7 @@ function Home() {
         }}
       >
         <midi-visualizer
-          src="/trans.mid"
+          src={midiSrc}
           type="staff"
           ref={staffVisualizer}
         ></midi-visualizer>
@@ -113,7 +149,7 @@ function Home() {
           alt="note_a"
           style={{ marginLeft: "5em", marginRight: "5em" }}
         />
-        {midi}
+        {midiSrc && midi}
         <img
           src="/note_b.svg"
           width="300em"
