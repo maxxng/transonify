@@ -9,11 +9,13 @@ import { useEffect } from "react";
 function Home() {
   const [file, setFile] = useState(null);
   const player = useRef(null);
-  const visualizer = useRef(null);
+  const pianoRollVisualizer = useRef(null);
+  const staffVisualizer = useRef(null);
 
   useEffect(() => {
     player.current.soundFont = "";
-    setInterval(() => console.log(player.current.noteSequence), 10000);
+    player.current.addVisualizer(pianoRollVisualizer.current);
+    player.current.addVisualizer(staffVisualizer.current);
   });
 
   const navbar = (
@@ -27,7 +29,7 @@ function Home() {
   const intro = (
     <div
       style={{
-        margin: "2em",
+        margin: "1em",
       }}
     >
       <h1 style={{ fontSize: "4em", fontFamily: "Paytone One" }}>
@@ -42,7 +44,7 @@ function Home() {
   const form = (
     <div
       style={{
-        margin: "2em",
+        margin: "1em",
       }}
     >
       <input
@@ -61,6 +63,41 @@ function Home() {
     </div>
   );
 
+  const midi = (
+    <div
+      style={{
+        textAlign: "left",
+        display: "flex",
+        flexDirection: "column",
+        width: "50%",
+      }}
+    >
+      <midi-player
+        src="/trans.mid"
+        style={{ alignSelf: "center" }}
+        ref={player}
+      />
+      <br />
+      <div
+        style={{
+          backgroundColor: "#eaf6de",
+          padding: "1em",
+          borderRadius: "5px",
+        }}
+      >
+        <midi-visualizer
+          src="/trans.mid"
+          type="staff"
+          ref={staffVisualizer}
+        ></midi-visualizer>
+        <midi-visualizer
+          src="/trans.mid"
+          ref={pianoRollVisualizer}
+        ></midi-visualizer>
+      </div>
+    </div>
+  );
+
   return (
     <div>
       {navbar} {intro} {form}
@@ -76,32 +113,7 @@ function Home() {
           alt="note_a"
           style={{ marginLeft: "5em", marginRight: "5em" }}
         />
-        <div
-          style={{
-            textAlign: "left",
-            display: "flex",
-            flexDirection: "column",
-            width: "50%",
-          }}
-        >
-          <midi-player
-            src="/trans.mid"
-            visualizer="#myVisualizer"
-            style={{ alignSelf: "center" }}
-            ref={player}
-          />
-          <br />
-          <midi-visualizer
-            src="/trans.mid"
-            id="myVisualizer"
-            style={{
-              backgroundColor: "#eaf6de",
-              padding: "2em",
-              borderRadius: "5px",
-            }}
-            ref={visualizer}
-          ></midi-visualizer>
-        </div>
+        {midi}
         <img
           src="/note_b.svg"
           width="300em"
