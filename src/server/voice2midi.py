@@ -258,7 +258,7 @@ def pianoroll_to_midi(y, pianoroll):
     return MyMIDI
         
 
-def run(file_in, file_out):
+def query(file_path, midi_path):
     #sr=22050
     note_min='A2'
     note_max='E6'
@@ -270,7 +270,7 @@ def run(file_in, file_out):
     pitch_acc = 0.99
     spread = 0.6
     
-    y, sr = librosa.load(file_in)
+    y, sr = librosa.load(file_path)
 
     T = transition_matrix(note_min, note_max, 0.9, 0.2)
     P = probabilities(y, note_min, note_max, sr, frame_length, window_length, hop_length, pitch_acc, voiced_acc, onset_acc, spread)
@@ -282,30 +282,6 @@ def run(file_in, file_out):
     pianoroll=states_to_pianoroll(states, note_min, note_max, hop_length/sr)
     #print(pianoroll)
     MyMIDI = pianoroll_to_midi(y, pianoroll)
-    with open(file_out, "wb") as output_file:
+    with open(midi_path, "wb") as output_file:
         MyMIDI.writeFile(output_file)
-
-def usage():
-    print("usage: " + sys.argv[0] + " -a audio-file")
-
-try:
-    opts, args = getopt.getopt(sys.argv[1:], 'a:')
-except getopt.GetoptError:
-    usage()
-    sys.exit(2)
-
-uploaded_audio = None
-
-for o, a in opts:
-    if o == '-a':
-        uploaded_audio = a
-    else:
-        assert False, "unhandled option"
-if uploaded_audio == None:
-    usage()
-
-print("Welcome!")
-file_in = uploaded_audio
-file_out = "output.mid"
-run(file_in, file_out)
 

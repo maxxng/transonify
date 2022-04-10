@@ -39,6 +39,11 @@ const melodyModels = {
     label: "CNN Model",
     url: "http://127.0.0.1:5000/melody",
   },
+  Voice2Midi: {
+    id: "v2m",
+    label: "Voice2Midi",
+    url: "http://127.0.0.1:5000/melody_v2m",
+  },
 };
 
 const initConfig = {
@@ -67,9 +72,9 @@ function Home() {
     }
     if (pianoRollVisualizer.current) {
       pianoRollVisualizer.current.config = {
-        noteHeight: 15,
+        noteHeight: 13,
         pixelsPerTimeStep: 100,
-        minPitch: 40,
+        minPitch: 70,
       };
     }
     if (staffVisualizer.current) {
@@ -189,7 +194,7 @@ function Home() {
           </Col>
         </Form.Group>
 
-        <Form.Group as={Row}>
+        <Form.Group as={Row} style={{ marginTop: ".5em" }}>
           <Form.Label
             column
             sm="3"
