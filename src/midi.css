@@ -7,12 +7,40 @@ midi-player::part(play-button) {
 }
 
 midi-visualizer svg rect.note {
-  opacity: 0.5;
+  opacity: 0.2;
   stroke-width: 1;
   fill: #013870;
   stroke: #eaf6de;
 }
 
+@keyframes piano-animate {
+  0% {
+    fill: #ffffff;
+  }
+  45% {
+    fill: #ffffff;
+    transform: translateY(-1.2em);
+    -webkit-transform: translateY(-1.2em);
+  }
+  50% {
+    fill: #386897;
+    transform: translateY(-1.5em);
+    -webkit-transform: translateY(-1.5em);
+  }
+  55% {
+    fill: #386897;
+    transform: translateY(-1.2em);
+    -webkit-transform: translateY(-1.2em);
+  }
+  100% {
+    fill: #013870;
+    stroke-width: 1;
+  }
+}
+
 midi-visualizer svg rect.note.active {
   opacity: 1;
+  animation-name: piano-animate;
+  animation-duration: 0.2s;
+  animation-timing-function: linear;
 }

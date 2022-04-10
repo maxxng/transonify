@@ -6,6 +6,9 @@ from werkzeug.utils import secure_filename
 
 from predict import AST_Model
 from inference import make_prediction
+from google_stt import transcribe as stt_transcribe
+from xslr_api import query as xslr_transcribe
+from base_api import query as base_transcribe
 
 UPLOAD_FOLDER = './data/'
 ALLOWED_EXTENSIONS = {'wav'}
@@ -29,9 +32,9 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-@app.route('/', methods=['POST'])
+@app.route('/melody', methods=['POST'])
 @cross_origin()
-def upload_file():
+def transcribe_melody():
     if request.method == 'POST':
         if 'file' not in request.files:
             return
@@ -47,6 +50,57 @@ def upload_file():
 
             response = send_from_directory(app.config['UPLOAD_FOLDER'], "trans.mid", as_attachment=True)
             return response
+
+@app.route('/lyrics', methods=['POST'])
+@cross_origin()
+def transcribe_lyrics():
+    if request.method == 'POST':
+        if 'file' not in request.files:
+            return
+        file = request.files['file']
+        if file.filename == '':
+            return
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            f = open(song_path, "wb")
+            file.save(f)
+
+            transcript, _ = stt_transcribe(song_path)
+            return {'lyrics': transcript}
+
+@app.route('/lyrics_xslr', methods=['POST'])
+@cross_origin()
+def transcribe_lyrics_xslr():
+    if request.method == 'POST':
+        if 'file' not in request.files:
+            return
+        file = request.files['file']
+        if file.filename == '':
+            return
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            f = open(song_path, "wb")
+            file.save(f)
+
+            _, transcript = xslr_transcribe(song_path)
+            return {'lyrics': transcript}
+
+@app.route('/lyrics_base', methods=['POST'])
+@cross_origin()
+def transcribe_lyrics_base():
+    if request.method == 'POST':
+        if 'file' not in request.files:
+            return
+        file = request.files['file']
+        if file.filename == '':
+            return
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            f = open(song_path, "wb")
+            file.save(f)
+
+            _, transcript = base_transcribe(song_path)
+            return {'lyrics': transcript}
 
 if __name__ == '__main__':
     app.run()

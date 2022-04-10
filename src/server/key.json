@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "eminent-quasar-345009",
+  "private_key_id": "596fc4e2da4110e327daceed168eda4bece70941",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDPgN9BVbejajJo\nY+3TK8geYw28LVEIZiW090SUTk1Mnq/83tjWAjzG9K9OhmvLDuyhGvQpy0rwl8xF\ntlUrPb8glJ7SuUR+BhyHhTMgfSmYMJ6TrRspOKDtGMPQlN8MuamHa9kv5rIZC2/P\nABGrKZIJOMhvczzn8kivlSyYx4m/PySg9h6qFnUAs9w9yd/xD4lb6pMmxwfDumHQ\nE3wsMHdFqugJTaEpLSwZ7R/ht/oxcMzGKZMGf4GvO3k4Q8hLIS7maN+sThwIRm7C\nD5aM9h6KIqsPRk4BhvI+WgOLbPdM6R/vbJpAAs9bHwLM7pI7GIVoqNmvELFIOdd3\naehr8M+PAgMBAAECggEAXor1LauEdCxasz10ipaUI2Q2SdrL5OvFmmJfGMNkbNiQ\njsJqQXfbgTrS9RBB5M7z+aNyQ+igSGahZ9HflEgZ4RpWEuTe1BysuwJxfQgJ/5GH\nbvmcOnfWurBh55Ms3XtqRo1Y835E/yw60THS2w2hwBnjGQSEZ5n4jCeHnkSr+jpU\nK9hseUklWxk6biMqBj3CCHCI8WTLvRnNOZluveD6dZuS+K5UVUdP77hBrQ/AF5CX\nNAApjz9UM1hn3v+jXA3SAFe/Z8TtnyNs68V47bD4DfQuOkzCFFJOCn5htYkc/6ns\npd87rZSRouECP7Rpx28Zojn494LgBPZOHte0gPwNQQKBgQD48C52lzqNOwIWC2pL\nLe5kg/Gc3r0l3pDZ67p/4SDAi64YE8WsP/HudAJUiVOroQbGZWJ/f9jKvhmBT+v8\nuF9FDwEpJRgOtQOmmr1j3cSTqmxmeQSbBJOPMo9Z9V+hO/5SO90NVrMTYMze2Z0Z\nODmMTKAgUR/xWaS7G6qhjAL1RwKBgQDVY8lD/a+k7q/oxRncfe1kk4A8zmteZeuu\nEM2mDSFE4nh4IbCV6/pY622cjs2cp+79qZaA5IErCU3nqFsRMQLhusoaU3WngfWf\nCvCgmg1zbSuMuAtXR0Lb0gm56RYgu7UY8VvBEIp8TL1MK6OyCtqTCoN3i5YVA+Sc\nVNarqDKXeQKBgQDvLCQYAJha1NTeRT1s2cZvgG2E4GQunDXjih53et8y34D21RhY\ntF9HUOJkQkTHY0DVINeP1E+AC0EKArWi66ls+kuNMnx4tOW7DnTkHFAf59+aXK9W\nGQGE1XjxX1Tv3mosrCNoC2KmPZzYh4/uiRyRdZVrN0ZPZmdk9eHssE6vRQKBgBfG\nhHhE3bsctRDUVStSBI8+N/2OajwcUwQT7zXfJKPOL+oCpvAtWLlrkcztxE7+DwzI\nRnKaAyJOaRW0lmD1+wI3k6kXP3aobjuINoNOZs1DjqShJPJWiEaBwn+qTsLa5zSe\nP8DlHOj4i+beveBqgSv88eTx8ojo5CHe+gQqO2jRAoGBAJBvIkCIqo+oDPJXLxM6\nHqUybN+pem4zZsgfIbMz5Y7G19kTvVf7/vVhz1GMvMbLf2PzETQsLrQaDRLYYpBY\nP9z2I/UK0kKuMamrIoqWCO1BpuxZsjduwms7HviMY6CcglAJ6JxnE6fYF8COPR+G\n09+LfksVuP3H++DLNMs0RDKp\n-----END PRIVATE KEY-----\n",
+  "client_email": "stt-service-account@eminent-quasar-345009.iam.gserviceaccount.com",
+  "client_id": "100255249973476783213",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/stt-service-account%40eminent-quasar-345009.iam.gserviceaccount.com"
+}
