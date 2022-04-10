@@ -9,6 +9,9 @@ from voice2midi import query as v2m_transcribe
 from google_stt import transcribe as stt_transcribe
 from xslr_api import query as xslr_transcribe
 from base_api import query as base_transcribe
+import sys
+sys.path.append('./vocal-remover/inference.py')
+from inference import query as voice_separator
 
 UPLOAD_FOLDER = './data/'
 ALLOWED_EXTENSIONS = {'wav'}

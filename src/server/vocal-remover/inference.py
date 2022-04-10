@@ -105,7 +105,7 @@ class Separator(object):
         return y_spec, v_spec
 
 
-def main():
+def main_fn(audio_input):
     p = argparse.ArgumentParser()
     p.add_argument('--gpu', '-g', type=int, default=-1)
     p.add_argument('--pretrained_model', '-P', type=str, default='models/baseline.pth')
@@ -131,8 +131,8 @@ def main():
 
     print('loading wave source...', end=' ')
     X, sr = librosa.load(
-        args.input, args.sr, False, dtype=np.float32, res_type='kaiser_fast')
-    basename = os.path.splitext(os.path.basename(args.input))[0]
+        audio_input, args.sr, False, dtype=np.float32, res_type='kaiser_fast')
+    basename = os.path.splitext(os.path.basename(audio_input))[0]
     print('done')
 
     if X.ndim == 1:
@@ -153,12 +153,12 @@ def main():
     print('inverse stft of instruments...', end=' ')
     wave = spec_utils.spectrogram_to_wave(y_spec, hop_length=args.hop_length)
     print('done')
-    sf.write('{}_Instruments.wav'.format(basename), wave.T, sr)
+    sf.write('../data/{}_Instruments.wav'.format(basename), wave.T, sr)
 
     print('inverse stft of vocals...', end=' ')
     wave = spec_utils.spectrogram_to_wave(v_spec, hop_length=args.hop_length)
     print('done')
-    sf.write('{}_Vocals.wav'.format(basename), wave.T, sr)
+    sf.write('../data/{}_Vocals.wav'.format(basename), wave.T, sr)
 
     if args.output_image:
         image = spec_utils.spectrogram_to_image(y_spec)
@@ -167,6 +167,6 @@ def main():
         image = spec_utils.spectrogram_to_image(v_spec)
         utils.imwrite('{}_Vocals.jpg'.format(basename), image)
 
+def query(input_file_path):
+    main_fn(input_file_path)
 
-if __name__ == '__main__':
-    main()
