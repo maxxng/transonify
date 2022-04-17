@@ -21,14 +21,14 @@ const lyricsModels = {
     label: "Google Speech-to-Text",
     url: "http://127.0.0.1:5000/lyrics",
   },
-  WAV2VEC2_XSLR: {
-    id: "w2v2_xslr",
+  WAV2VEC2_XLSR: {
+    id: "w2v2_xlsr",
     label: "XLSR-Wav2Vec2",
-    url: "http://127.0.0.1:5000/lyrics_xslr",
+    url: "http://127.0.0.1:5000/lyrics_xlsr",
   },
   WAV2VEC2_BASE: {
     id: "w2v2_base",
-    label: "Base Wav2Vec2",
+    label: "Wav2Vec2 Base",
     url: "http://127.0.0.1:5000/lyrics_base",
   },
 };
@@ -36,12 +36,12 @@ const lyricsModels = {
 const melodyModels = {
   CNN: {
     id: "cnn",
-    label: "CNN Model",
+    label: "CNN",
     url: "http://127.0.0.1:5000/melody",
   },
-  Voice2Midi: {
-    id: "v2m",
-    label: "Voice2Midi",
+  AUDIO2MIDI: {
+    id: "audio2midi",
+    label: "Audio to Midi (pYin)",
     url: "http://127.0.0.1:5000/melody_v2m",
   },
 };
@@ -59,6 +59,7 @@ function Home() {
   const [lyrics, setLyrics] = useState(null);
   const [collapseState, setCollapseState] = useState(initCollapseState);
   const [config, setConfig] = useState(initConfig);
+  const [isPolyphonic, setIsPolyphonic] = useState(false);
 
   const player = useRef(null);
   const pianoRollVisualizer = useRef(null);
@@ -104,24 +105,38 @@ function Home() {
   };
 
   const handleSubmit = () => {
+    console.log(isPolyphonic);
     setCanSubmit(false);
     setIsFetching(true);
     const formData = new FormData();
 
     formData.append("file", selectedFile);
 
-    Promise.all([
-      fetch(melodyModels[config.melody].url, {
-        method: "POST",
-        mode: "cors",
-        body: formData,
-      }),
-      fetch(lyricsModels[config.lyrics].url, {
-        method: "POST",
-        mode: "cors",
-        body: formData,
-      }),
-    ])
+    fetch("http://127.0.0.1:5000/save", {
+      method: "POST",
+      mode: "cors",
+      body: formData,
+    })
+      .then(() =>
+        isPolyphonic
+          ? fetch("http://127.0.0.1:5000/separate", {
+              method: "POST",
+              mode: "cors",
+            })
+          : Promise.resolve()
+      )
+      .then(() =>
+        Promise.all([
+          fetch(melodyModels[config.melody].url, {
+            method: "POST",
+            mode: "cors",
+          }),
+          fetch(lyricsModels[config.lyrics].url, {
+            method: "POST",
+            mode: "cors",
+          }),
+        ])
+      )
       .then(([melodyResponse, lyricsResponse]) =>
         Promise.all([melodyResponse.blob(), lyricsResponse.json()])
       )
@@ -212,6 +227,21 @@ function Home() {
             </Form.Select>
           </Col>
         </Form.Group>
+        <Row style={{ marginTop: "1em" }}>
+          <Col sm="3"></Col>
+
+          <Col sm="7">
+            <Form.Group>
+              <Form.Check
+                type="switch"
+                id="custom-switch"
+                label="Separate polyphonic audio"
+                style={{ color: "#013870" }}
+                onChange={() => setIsPolyphonic(!isPolyphonic)}
+              />
+            </Form.Group>
+          </Col>
+        </Row>
 
         <Button
           disabled={!canSubmit}
@@ -254,81 +284,6 @@ function Home() {
     </svg>
   );
 
-  const midi = (
-    <div>
-      <midi-player
-        src={midiSrc}
-        style={{
-          alignSelf: "center",
-          width: "100%",
-        }}
-        ref={player}
-      />
-      <br />
-      <br />
-      <div
-        style={{
-          backgroundColor: "#ffffff",
-          padding: "1em",
-          borderRadius: "5px",
-          textAlign: "left",
-          color: "#013870",
-        }}
-      >
-        <span
-          onClick={() =>
-            setCollapseState({
-              ...collapseState,
-              pianoroll: !collapseState.pianoroll,
-            })
-          }
-        >
-          {"Piano Roll "}
-          {collapseState.pianoroll ? upArrow : downArrow}
-        </span>
-        <Collapse in={collapseState.pianoroll}>
-          <div>
-            <midi-visualizer
-              src={midiSrc}
-              ref={pianoRollVisualizer}
-            ></midi-visualizer>
-          </div>
-        </Collapse>
-      </div>
-      <br />
-      <div
-        style={{
-          backgroundColor: "#ffffff",
-          padding: "1em",
-          borderRadius: "5px",
-          textAlign: "left",
-          color: "#013870",
-        }}
-      >
-        <span
-          onClick={() =>
-            setCollapseState({
-              ...collapseState,
-              staff: !collapseState.staff,
-            })
-          }
-        >
-          {"Score "}
-          {collapseState.staff ? upArrow : downArrow}
-        </span>
-        <Collapse in={collapseState.staff}>
-          <div>
-            <midi-visualizer
-              src={midiSrc}
-              type="staff"
-              ref={staffVisualizer}
-            ></midi-visualizer>
-          </div>
-        </Collapse>
-      </div>
-    </div>
-  );
-
   const lyricsBox = (
     <div
       style={{
@@ -356,6 +311,86 @@ function Home() {
           <p>{lyrics}</p>
         </div>
       </Collapse>
+    </div>
+  );
+
+  const midi = (
+    <div>
+      <midi-player
+        src={midiSrc}
+        style={{
+          alignSelf: "center",
+          width: "100%",
+        }}
+        ref={player}
+      />
+      <br />
+      <br />
+      <Row>
+        <Col sm="9">
+          <div
+            style={{
+              backgroundColor: "#ffffff",
+              padding: "1em",
+              borderRadius: "5px",
+              textAlign: "left",
+              color: "#013870",
+            }}
+          >
+            <span
+              onClick={() =>
+                setCollapseState({
+                  ...collapseState,
+                  pianoroll: !collapseState.pianoroll,
+                })
+              }
+            >
+              {"Piano Roll "}
+              {collapseState.pianoroll ? upArrow : downArrow}
+            </span>
+            <Collapse in={collapseState.pianoroll}>
+              <div>
+                <midi-visualizer
+                  src={midiSrc}
+                  ref={pianoRollVisualizer}
+                ></midi-visualizer>
+              </div>
+            </Collapse>
+          </div>
+          <br />
+          <div
+            style={{
+              backgroundColor: "#ffffff",
+              padding: "1em",
+              borderRadius: "5px",
+              textAlign: "left",
+              color: "#013870",
+            }}
+          >
+            <span
+              onClick={() =>
+                setCollapseState({
+                  ...collapseState,
+                  staff: !collapseState.staff,
+                })
+              }
+            >
+              {"Score "}
+              {collapseState.staff ? upArrow : downArrow}
+            </span>
+            <Collapse in={collapseState.staff}>
+              <div>
+                <midi-visualizer
+                  src={midiSrc}
+                  type="staff"
+                  ref={staffVisualizer}
+                ></midi-visualizer>
+              </div>
+            </Collapse>
+          </div>
+        </Col>
+        <Col sm="3">{lyricsBox}</Col>
+      </Row>
     </div>
   );
 
@@ -391,8 +426,6 @@ function Home() {
           }}
         >
           {isFetching ? spinner : midiSrc && midi}
-          <br />
-          {!isFetching && lyrics && lyricsBox}
           <br />
         </div>
         {/* <img
