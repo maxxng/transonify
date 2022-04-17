@@ -15,21 +15,23 @@ const initCollapseState = {
   lyrics: false,
 };
 
+const URL = "https://transonify.herokuapp.com/";
+
 const lyricsModels = {
   GOOGLE_STT: {
     id: "google_stt",
     label: "Google Speech-to-Text",
-    url: "http://127.0.0.1:5000/lyrics",
+    url: URL + "lyrics",
   },
   WAV2VEC2_XLSR: {
     id: "w2v2_xlsr",
     label: "XLSR-Wav2Vec2",
-    url: "http://127.0.0.1:5000/lyrics_xlsr",
+    url: URL + "lyrics_xlsr",
   },
   WAV2VEC2_BASE: {
     id: "w2v2_base",
     label: "Wav2Vec2 Base",
-    url: "http://127.0.0.1:5000/lyrics_base",
+    url: URL + "lyrics_base",
   },
 };
 
@@ -37,12 +39,12 @@ const melodyModels = {
   CNN: {
     id: "cnn",
     label: "CNN",
-    url: "http://127.0.0.1:5000/melody",
+    url: URL + "melody",
   },
   AUDIO2MIDI: {
     id: "audio2midi",
     label: "Audio to Midi (pYin)",
-    url: "http://127.0.0.1:5000/melody_v2m",
+    url: URL + "/melody_v2m",
   },
 };
 
@@ -112,14 +114,14 @@ function Home() {
 
     formData.append("file", selectedFile);
 
-    fetch("http://127.0.0.1:5000/save", {
+    fetch(URL + "save", {
       method: "POST",
       mode: "cors",
       body: formData,
     })
       .then(() =>
         isPolyphonic
-          ? fetch("http://127.0.0.1:5000/separate", {
+          ? fetch(URL + "separate", {
               method: "POST",
               mode: "cors",
             })
