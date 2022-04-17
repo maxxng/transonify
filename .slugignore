@@ -1,0 +1,2 @@
+echo 'package.json' >> .slugignore
+git add .slugignore

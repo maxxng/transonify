@@ -25,4 +25,4 @@ yarn-error.log*
 *.wav
 *.mid
 
-/src/server/__pycache__/*
+*/__pycache__/*
