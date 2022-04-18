@@ -107,7 +107,7 @@ class Separator(object):
 def main_fn(audio_input):
     p = argparse.ArgumentParser()
     p.add_argument('--gpu', '-g', type=int, default=-1)
-    p.add_argument('--pretrained_model', '-P', type=str, default='vocal_remover/models/baseline.pth')
+    p.add_argument('--pretrained_model', '-P', type=str, default='./server/vocal_remover/models/baseline.pth')
     p.add_argument('--sr', '-r', type=int, default=44100)
     p.add_argument('--n_fft', '-f', type=int, default=2048)
     p.add_argument('--hop_length', '-H', type=int, default=1024)
@@ -151,12 +151,12 @@ def main_fn(audio_input):
     print('inverse stft of instruments...', end=' ')
     wave = spec_utils.spectrogram_to_wave(y_spec, hop_length=args.hop_length)
     print('done')
-    sf.write('data/{}_Instruments.wav'.format(basename), wave.T, sr)
+    sf.write('server/data/{}_Instruments.wav'.format(basename), wave.T, sr)
 
     print('inverse stft of vocals...', end=' ')
     wave = spec_utils.spectrogram_to_wave(v_spec, hop_length=args.hop_length)
     print('done')
-    sf.write('data/{}_Vocals.wav'.format(basename), wave.T, sr)
+    sf.write('server/data/{}_Vocals.wav'.format(basename), wave.T, sr)
 
     if args.output_image:
         image = spec_utils.spectrogram_to_image(y_spec)

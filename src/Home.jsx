@@ -9,13 +9,15 @@ import Navbar from "react-bootstrap/Navbar";
 import Row from "react-bootstrap/Row";
 import Spinner from "react-bootstrap/Spinner";
 
+// Collapse all result containers
 const initCollapseState = {
   pianoroll: false,
   staff: false,
   lyrics: false,
 };
 
-const URL = "https://transonify.herokuapp.com/";
+// Use for local development
+const URL = "http://localhost:5000/";
 
 const lyricsModels = {
   GOOGLE_STT: {
@@ -44,7 +46,7 @@ const melodyModels = {
   AUDIO2MIDI: {
     id: "audio2midi",
     label: "Audio to Midi (pYin)",
-    url: URL + "/melody_v2m",
+    url: URL + "melody_v2m",
   },
 };
 
@@ -67,6 +69,7 @@ function Home() {
   const pianoRollVisualizer = useRef(null);
   const staffVisualizer = useRef(null);
 
+  // Configure html midi player web components
   useEffect(() => {
     if (player.current) {
       player.current.soundFont = "";
@@ -106,8 +109,8 @@ function Home() {
     setConfig({ ...config, melody: e.target.value });
   };
 
+  // Send audio file to server for transcription
   const handleSubmit = () => {
-    console.log(isPolyphonic);
     setCanSubmit(false);
     setIsFetching(true);
     const formData = new FormData();

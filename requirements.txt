@@ -1,6 +1,7 @@
 autocorrect==2.6.1
 Flask==2.0.3
 Flask_Cors==3.0.10
+google-cloud-speech==2.13.1
 librosa==0.8.1
 matplotlib==3.5.1
 MIDIUtil==1.2.1

@@ -2,18 +2,20 @@ import os
 from google.cloud import speech
 import subprocess
     
-os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'key.json'
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = './server/key.json'
 os.environ['GRPC_POLL_STRATEGY'] = 'poll'
 speech_client = speech.SpeechClient()
 
 def transcribe(song_path):
+    '''
     # Transcribe local media file 
     # File size : < 10 mbps, length < 1 minute
     # .wav file
+    '''
 
     # Load files
     input_file = song_path
-    converted_file = 'data/mono.wav'
+    converted_file = 'server/data/mono.wav'
 
     if os.path.exists(converted_file):
         os.remove(converted_file)
@@ -29,24 +31,24 @@ def transcribe(song_path):
     config_wav = speech.RecognitionConfig(
         sample_rate_hertz=44100,
         language_code="en-US",
+        encoding="LINEAR16",
         audio_channel_count=1,
+        model="default"
     )
 
     # Transcribing the RecognitionAudio objects
-    response_standard_wav = speech_client.recognize(
+    response_standard_wav = speech_client.long_running_recognize(
         config = config_wav,
         audio = audio_wav
     )
 
-    transcript, confidence = result(response_standard_wav)
+    response = response_standard_wav.result(timeout=10000)
 
-    return transcript, confidence
+    transcript_res = ''
 
-def result(response):
     for result in response.results:
-        best_alternative = result.alternatives[0]
-        transcript = best_alternative.transcript
-        confidence = best_alternative.confidence
-        return transcript, confidence
+        transcript_res += result.alternatives[0].transcript
+
+    return transcript_res
 
 config = dict(language_code="en-US")

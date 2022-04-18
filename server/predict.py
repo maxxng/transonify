@@ -4,7 +4,7 @@ import librosa
 import numpy as np
 from tqdm import tqdm
 
-from model import BaseNN
+from final_modified_cnn import BaseNN
 
 FRAME_LENGTH = librosa.frames_to_time(1, sr=44100, hop_length=1024)
 

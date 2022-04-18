@@ -7,11 +7,11 @@ from predict import AST_Model
 from inference import make_prediction as cnn_transcribe
 from voice2midi import query as v2m_transcribe
 from google_stt import transcribe as stt_transcribe
-from xslr_api import query as xlsr_transcribe
+from xlsr_api import query as xlsr_transcribe
 from base_api import query as base_transcribe
 from vocal_remover.inference_vr import query as separate_voice
 
-UPLOAD_FOLDER = './data/'
+UPLOAD_FOLDER = './server/data/'
 ALLOWED_EXTENSIONS = {'wav'}
 
 app = Flask(__name__, static_folder='../build', static_url_path='/')
@@ -29,11 +29,17 @@ def allowed_file(filename):
 
 @app.route('/')
 def index():
+    '''
+    Serve homepage from build folder
+    '''
     return app.send_static_file('index.html')
     
 @app.route('/save', methods=['POST'])
 @cross_origin()
 def save():
+    '''
+   Save the audio file locally for transcription
+    '''
     if request.method == 'POST':
         if 'file' not in request.files:
             return
@@ -45,6 +51,9 @@ def save():
 @app.route('/separate', methods=['POST'])
 @cross_origin()
 def separate():
+    '''
+    Perform polyphonic separation on saved audio file
+    '''
     separate_voice(song_path)
     os.remove(song_path)
     os.rename(mono_path, song_path)
@@ -53,42 +62,54 @@ def separate():
 @app.route('/melody', methods=['POST'])
 @cross_origin()
 def transcribe_melody():
-    model_path = os.path.join(app.config['UPLOAD_FOLDER'], "model")
+    '''
+    Use CNN model for melody transcription
+    '''
+    model_path = os.path.join(app.config['UPLOAD_FOLDER'], "model_4")
     onset_thres = 0.4
     offset_thres = 0.5
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     model = AST_Model(device, model_path)
-
     cnn_transcribe(song_path, midi_path, model, onset_thres, offset_thres)
-
-    response = send_from_directory(app.config['UPLOAD_FOLDER'], "trans.mid", as_attachment=True)
+    response = send_from_directory("./data/", "trans.mid", as_attachment=True)
     return response
 
 @app.route('/melody_v2m', methods=['POST'])
 @cross_origin()
 def transcribe_melody_v2m():
+    '''
+    Use pYin model for melody transcription
+    '''
     v2m_transcribe(song_path, midi_path)
-
-    response = send_from_directory(app.config['UPLOAD_FOLDER'], "trans.mid", as_attachment=True)
+    response = send_from_directory("./data/", "trans.mid", as_attachment=True)
     return response
 
 @app.route('/lyrics', methods=['POST'])
 @cross_origin()
 def transcribe_lyrics():
-    transcript, _ = stt_transcribe(song_path)
+    '''
+    Use Google Speech-to-Text model for lyrics transcription
+    '''
+    transcript = stt_transcribe(song_path)
     return {'lyrics': transcript}
 
 @app.route('/lyrics_xlsr', methods=['POST'])
 @cross_origin()
 def transcribe_lyrics_xlsr():
+    '''
+    Use XLSR-Wav2Vec2 model for lyrics transcription
+    '''
     _, transcript = xlsr_transcribe(song_path)
     return {'lyrics': transcript}
 
 @app.route('/lyrics_base', methods=['POST'])
 @cross_origin()
 def transcribe_lyrics_base():
+    '''
+    Use Wav2Vec2 Base model for lyrics transcription
+    '''
     _, transcript = base_transcribe(song_path)
     return {'lyrics': transcript}
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=False, host='0.0.0.0', port=os.environ.get("PORT", 5000))

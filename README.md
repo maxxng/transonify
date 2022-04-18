@@ -1,70 +1,57 @@
-# Getting Started with Create React App
+# Transonify
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Transonify is a web application built with React and Flask for automatic lyrics and melody transcription.
 
-## Available Scripts
+The React code is available at `/src` and the Flask code is available at `/server` (entry point is `server/server.py`).
 
-In the project directory, you can run:
+For more information regarding the project refer to `report.pdf`.
 
-### `npm start`
+## Running Docker Image
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+The entire application is available as a Docker image. After installing Docker (https://docs.docker.com/get-docker/), run:
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+    docker run -dp 5000:5000 justintzuriel/transonify
 
-### `npm test`
+Open http://localhost:5000/ to access the application.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Running Locally
 
-### `npm run build`
+Python version 3.8.12 is recommended.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+If libsndfile1 and ffmpeg are not installed, install them first:
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+    apt-get update -y
+    apt-get install -y --no-install-recommends build-essential gcc libsndfile1
+    apt-get install -y ffmpeg
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+In the project directory, run:
 
-### `npm run eject`
+    pip3 install -r requirements.txt
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+Then, start the Flask application with:
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+    python3 server/server.py
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+Open http://localhost:5000/ to access the application.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## Things to Note
 
-## Learn More
+The lyrics transcription models "XLSR-Wav2Vec2" and "Wav2Vec2 Base" are hosted on Hugging Face and need to be instantiated the first time they are called in a while. Thus, the application will place an error message instead of the lyrics transcription result in the "Lyrics" container if these models have not been instantiated yet. When this occurs, click the "Transonify" button again after a few seconds for the application to reattempt the transcription.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## Application Overview
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### Frontend
 
-### Code Splitting
+The React frontend was bootstrapped using create-react-app. The whole homepage is contained inside the src/Home.jsx file as a functional component. The application allows users to upload a .wav file of their choice from their file system. The application also allows the selection of the models for both lyrics transcription and melody transcription. There is also a switch for whether the user wants to do polyphonic separation, which would be useful for transcribing polyphonic audio more accurately.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+States are used to keep track of the current selected model and whether polyphonic separation is to be performed. When the user clicks on the "Transonify" button, the audio file gets sent to the backend for transcription. During this process, the web application displays a loading animation. After all the backend processes are done, the loading animation is replaced with the transcription results from the backend.
 
-### Analyzing the Bundle Size
+The results are divided into several collapsible containers. The lyrics transcription results are returned in a single "Lyrics" container, while the melody transcription results are returned as two representations in the "Piano Roll" and "Score" containers. There is also an audio player that can control the playback of the melody transcription results. The containers can be collapsed so that users can choose to only see the results they are interested in.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+To visualize the melody transcription results a web component https://github.com/cifkao/html-midi-player is used. The web component consists of a midi player and multiple midi visualizers. For Transonify, the "piano roll" and "staff" visualizations are used for the piano roll and score representations respectively. This is done so users without a music background can still understand the results using the piano roll while allowing those with a music background to make use of the provided music score. Some of the styles of the web component can be customized using additional CSS, which is how the animations for the active notes in the piano roll representation is done.
 
-### Making a Progressive Web App
+### Backend
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+The Flask backend consists of several endpoints. These endpoints are listed in the server/server.py file, which is also the entry point for the Flask application. The "/" endpoint serves the homepage of the web application. The "/save" endpoint saves the audio sent from the frontend. The "/separate" endpoint separates the audio into vocal and instrumental tracks, and the vocal track is taken for further processing. This endpoint is called if the user switches on polyphonic separation.
 
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+There are three models that can be chosen for the lyrics transcription: Google Speech-to-Text, XLSR-Wav2Vec2, and Wav2Vec2 Base. The endpoints for these models are "/lyrics", "/lyrics_xlsr", and "/lyrics_base" respectively. There are two models that can be chosen for the melody transcription: CNN and pYIN. The endpoints are "/melody" and "/melody_v2m" respectively. If called, the endpoints for the models take the saved audio file and perform either lyrics or melody transcription. For lyrics transcription, the predicted lyrics string is returned, whereas for melody transcription, a midi file is returned.
