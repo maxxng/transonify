@@ -1,3 +1,5 @@
+# Automatic Lyrics Transctipion
+
 The following folder contains the code files for fine tuning a pre-trained ASR model for singing data.
 
 The training has been done on Kaggle using a GPU. 
