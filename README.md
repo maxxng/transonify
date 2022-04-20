@@ -73,3 +73,13 @@ To visualize the melody transcription results a web component https://github.com
 The Flask backend consists of several endpoints. These endpoints are listed in the server/server.py file, which is also the entry point for the Flask application. The "/" endpoint serves the homepage of the web application. The "/save" endpoint saves the audio sent from the frontend. The "/separate" endpoint separates the audio into vocal and instrumental tracks, and the vocal track is taken for further processing. This endpoint is called if the user switches on polyphonic separation.
 
 There are three models that can be chosen for the lyrics transcription: Google Speech-to-Text, XLSR-Wav2Vec2, and Wav2Vec2 Base. The endpoints for these models are "/lyrics", "/lyrics_xlsr", and "/lyrics_base" respectively. There are two models that can be chosen for the melody transcription: CNN and pYIN. The endpoints are "/melody" and "/melody_v2m" respectively. If called, the endpoints for the models take the saved audio file and perform either lyrics or melody transcription. For lyrics transcription, the predicted lyrics string is returned, whereas for melody transcription, a midi file is returned.
+
+## Credits
+
+This codebase includes code adapted from/built upon:
+
+- https://github.com/tiagoft/audio_to_midi
+- https://github.com/tsurumeso/vocal-remover
+- https://github.com/cifkao/html-midi-player
+- https://huggingface.co/blog/fine-tune-wav2vec2-english
+- CS4347 Assignment 2
