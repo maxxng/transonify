@@ -2,7 +2,7 @@
 
 Transonify is a web application built with React and Flask for automatic lyrics and melody transcription.
 
-The React code is available at `/src` (homepage at `src/Home.jsx`) and the Flask code is available at `/server` (entry point at `server/server.py`).
+The React code is available at `/src` (homepage at `/src/Home.jsx`) and the Flask code is available at `/server` (entry point at `/server/server.py`).
 
 Code for generating ALT models is available at `/alt`.
 
