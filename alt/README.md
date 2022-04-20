@@ -10,4 +10,6 @@ The training has been done on Kaggle using a GPU.
 
 ## Credits
 
-This repository used code built on the basis of: https://huggingface.co/blog/fine-tune-wav2vec2-english
+This codebase includes code adapted from: 
+
+-https://huggingface.co/blog/fine-tune-wav2vec2-english
