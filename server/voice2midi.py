@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Audio-to-MIDI converter using librosa
+Code referenced from https://github.com/tiagoft/audio_to_midi
 NOTE: please run "pip3 install numpy librosa midiutil"
 
 """
