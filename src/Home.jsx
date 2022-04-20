@@ -1,3 +1,5 @@
+// Homepage of Transonify application
+
 import { useEffect, useRef, useState } from "react";
 
 import "./midi.css";
@@ -50,6 +52,7 @@ const melodyModels = {
   },
 };
 
+// Initial selected models
 const initConfig = {
   lyrics: "GOOGLE_STT",
   melody: "CNN",
@@ -173,6 +176,7 @@ function Home() {
     </h5>
   );
 
+  // Form to select models and submit audio file
   const form = (
     <div
       style={{
@@ -289,6 +293,7 @@ function Home() {
     </svg>
   );
 
+  // Container for lyrics transcription result
   const lyricsBox = (
     <div
       style={{
@@ -319,6 +324,7 @@ function Home() {
     </div>
   );
 
+  // MIDI player and visualizations for melody transcription result
   const midi = (
     <div>
       <midi-player
@@ -399,6 +405,7 @@ function Home() {
     </div>
   );
 
+  // Spinner for loading animation
   const spinner = (
     <Spinner animation="border" role="status" style={{ alignSelf: "center" }}>
       <span className="visually-hidden">Loading...</span>

@@ -1,3 +1,7 @@
+'''
+API for CNN model
+'''
+
 from torch.utils.data import DataLoader
 
 import mido

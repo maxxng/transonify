@@ -1,3 +1,7 @@
+'''
+API for Google Speech-to-Text
+'''
+
 import os
 from google.cloud import speech
 import subprocess

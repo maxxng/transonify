@@ -1,3 +1,7 @@
+'''
+API file for Wav2Vec2 Base
+'''
+
 import requests
 import json
 from autocorrect import Speller

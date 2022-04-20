@@ -1,3 +1,7 @@
+'''
+API file for XLSR-Wav2Vec2
+'''
+
 import requests
 import json
 from autocorrect import Speller

@@ -1,3 +1,7 @@
+'''
+File used by CNN model for predicting frames
+'''
+
 import torch
 
 import librosa

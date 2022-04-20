@@ -1,3 +1,7 @@
+'''
+API for polyphonic separation
+'''
+
 import argparse
 import os
 

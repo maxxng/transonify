@@ -2,13 +2,31 @@
 
 Transonify is a web application built with React and Flask for automatic lyrics and melody transcription.
 
-The React code is available at `/src` and the Flask code is available at `/server` (entry point is `server/server.py`).
+The React code is available at `/src` (homepage at `src/Home.jsx`) and the Flask code is available at `/server` (entry point at `server/server.py`).
+
+Code for generating ALT models is available at `/alt`.
+
+Sample songs are available at `/samples`.
 
 For more information regarding the project refer to `report.pdf`.
 
+For any enquiries or problems with the application, do reach out to us at justin.tzuriel@u.nus.edu.
+
+## Heroku
+
+A limited version of the app is available at http://transonify.herokuapp.com/.
+A couple things to note about the Heroku app:
+
+- It only supports transcription for very short songs (e.g. `/samples/do_re_mi.wav`) because Heroku has a request time-out after 30 seconds.
+- It does not support the polyphonic separation feature, as the process requires a lot of memory but the free dynos (containers) available in Heroku only have 512MB of RAM.
+- If after submitting (clicking "Transonify") the app does not return any result, or if the lyrics transcription models are still loading, wait a couple of seconds and try submitting again.
+- Using free dynos results in the app being down after a period of inactivity. If the webpage takes a while to load and then shows "Application error", wait a couple of seconds and refresh the webpage. The app should be up afterwards.
+
+Due to these limitations, we recommend running the Docker image instead, especially to transcribe longer songs and perform polyphonic separation.
+
 ## Running Docker Image
 
-The entire application is available as a Docker image. After installing Docker (https://docs.docker.com/get-docker/), run:
+The entire application is available as a Docker image. After installing Docker (https://docs.docker.com/get-docker/), run the following in your local CLI:
 
     docker run -dp 5000:5000 justintzuriel/transonify
 
@@ -24,7 +42,7 @@ If libsndfile1 and ffmpeg are not installed, install them first:
     apt-get install -y --no-install-recommends build-essential gcc libsndfile1
     apt-get install -y ffmpeg
 
-In the project directory, run:
+In the project's root directory, run:
 
     pip3 install -r requirements.txt
 

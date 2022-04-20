@@ -1,3 +1,7 @@
+'''
+Entry point for Flask application
+'''
+
 import os
 import torch
 from flask import Flask, request, send_from_directory
